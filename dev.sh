@@ -1,2 +1,4 @@
-cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 *.c
+clear
+norminette
+cc -Wall -Wextra -Werror *bonus.c -ggdb
 ./a.out

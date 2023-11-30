@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dmdemirk <dmdemirk@student.42london.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/23 14:50:21 by dmdemirk          #+#    #+#             */
-/*   Updated: 2023/11/30 12:45:09 by dmdemirk         ###   ########.fr       */
+/*   Created: 2023/11/30 13:55:11 by dmdemirk          #+#    #+#             */
+/*   Updated: 2023/11/30 13:55:25 by dmdemirk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
@@ -87,26 +87,26 @@ static char	*fn_lineout(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	*remain;
+	static char	*remain[MAX_FD];
 	char		*line;
 	char		*buffer;
 
 	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(remain);
+		free(remain[fd]);
 		free(buffer);
-		remain = ((void *)0);
+		remain[fd] = ((void *)0);
 		buffer = ((void *)0);
 		return ((void *)0);
 	}
 	if (!buffer)
 		return ((void *)0);
-	line = fn_fillbuffer(fd, remain, buffer);
+	line = fn_fillbuffer(fd, remain[fd], buffer);
 	free(buffer);
 	buffer = ((void *)0);
 	if (!line)
 		return ((void *)0);
-	remain = fn_lineout(line);
+	remain[fd] = fn_lineout(line);
 	return (line);
 }
