@@ -14,29 +14,32 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-void	check_fd(void)
-{
-	printf("STDIN_FILENO:  %d\n", fileno(stdin));
-	printf("STDOUT_FILENO: %d\n", fileno(stdout));
-	printf("STDERR_FILENO: %d\n", fileno(stderr));
+void check_fd(void) {
+  printf("STDIN_FILENO:  %d\n", fileno(stdin));
+  printf("STDOUT_FILENO: %d\n", fileno(stdout));
+  printf("STDERR_FILENO: %d\n", fileno(stderr));
 }
 
-int	main(void)
-{
-	char	*file;
-	int		fd;
-	char	*line;
+int main(void) {
+  char *file;
+  int fd;
+  char *line;
+  char buf[256];
+  int chars_read;
 
-	check_fd();
-	file = "example.txt";
-	fd = open(file, O_RDONLY);
-	if (fd == -1)
-	{
-		perror("error opening file");
-		return (1);
-	}
-	printf("TXT_FILE_OPEN: %d\n", fd);
-	line = get_next_line(fd);
-	printf("\nLINE OUTPUT-> \n%s\n", line);
-	return (0);
+  check_fd();
+  file = "example.txt";
+  fd = open(file, O_RDONLY);
+  if (fd == -1) {
+    perror("error opening file");
+    return (1);
+  }
+  while ((chars_read = read(fd, buf, 5))) {
+    buf[chars_read] = '\0';
+    printf("buf -> %s\n", buf);
+  }
+  // printf("TXT_FILE_OPEN: %d\n", fd);
+  // line = get_next_line(fd);
+  // printf("\nLINE OUTPUT-> \n%s\n", line);
+  return (0);
 }

@@ -12,93 +12,91 @@
 
 #include "get_next_line_bonus.h"
 
-char	*ft_strdup(const char *src)
-{
-	size_t		str_length;
-	char		*dest;
+int find_newline(t_list *list) {
+  int i;
 
-	str_length = 0;
-	while (src[str_length])
-		str_length++;
-	dest = (char *)malloc(sizeof(char) * (str_length + 1));
-	if (dest == ((void *)0))
-		return ((void *)0);
-	str_length = 0;
-	while (src[str_length])
-	{
-		dest[str_length] = src[str_length];
-		str_length++;
-	}
-	dest[str_length] = '\0';
-	return (dest);
+  if (!list)
+    return (0);
+  while (list) {
+    i = 0;
+    while (list->str_buf[i] && i < BUFFER_SIZE) {
+      if (list->str_buf[i] == '\n')
+        return (1);
+      ++i;
+    }
+    list = list->next;
+  }
+  return (0);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
-{
-	size_t	src_length;
-
-	src_length = 0;
-	while (src[src_length] != '\0')
-		src_length++;
-	if (size > 0)
-	{
-		while (size > 1 && *src != '\0')
-		{
-			*dst++ = *src++;
-			size--;
-		}
-		*dst = '\0';
-	}
-	return (src_length);
+t_list *find_last_node(t_list *list) {
+  if (!list)
+    return (NULL);
+  while (list->next)
+    list = list->next;
+  return (list);
 }
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	counter;
+void copy_str(t_list *list, char *str) {
+  int i;
+  int k;
 
-	counter = 0;
-	while (*s)
-	{
-		counter++;
-		s++;
-	}
-	return (counter);
+  if (!list)
+    return;
+  k = 0;
+  while (list) {
+    i = 0;
+    while (list->str_buf[i]) {
+      if (list->str_buf[i] == '\n') {
+        str[k++] = '\n';
+        str[k] = '\0';
+        return;
+      }
+      str[k++] = list->str_buf[i++];
+    }
+    list = list->next;
+  }
+  str[k] = '\0';
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	s1_length;
-	size_t	s2_length;
-	size_t	total_length;
-	char	*s_result;
+int len_to_newline(t_list *list) {
+  int i;
+  int len;
 
-	if (!s1 || !s2)
-		return ((void *)0);
-	s1_length = ft_strlen(s1);
-	s2_length = ft_strlen(s2);
-	total_length = s1_length + s2_length;
-	s_result = (char *)malloc((total_length + 1));
-	if (s_result == ((void *)0))
-		return ((void *)0);
-	ft_strlcpy(s_result, s1, total_length + 1);
-	ft_strlcpy(s_result + s1_length, s2, total_length + 1 - s1_length);
-	return (s_result);
+  if (!list)
+    return (0);
+  len = 0;
+  while (list) {
+    i = 0;
+    while (list->str_buf[i]) {
+      if (list->str_buf[i] == '\n') {
+        ++len;
+        return (len);
+      }
+      ++i;
+      ++len;
+    }
+    list = list->next;
+  }
+  return (len);
 }
 
-char	*ft_strchr(const char *s, int c)
-{
-	unsigned int	i;
-	char			cc;
+void dealloc(t_list **list, t_list *clean_node, char *buf) {
+  t_list *tmp;
 
-	cc = (char)c;
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == cc)
-			return ((char *)&s[i]);
-		i++;
-	}
-	if (s[i] == cc)
-		return ((char *)&s[i]);
-	return ((void *)0);
+  if (!*list)
+    return;
+  while (*list) {
+    tmp = (*list)->next;
+    free((*list)->str_buf);
+    free(*list);
+    *list = tmp;
+  }
+  *list = NULL;
+  if (clean_node->str_buf[0])
+    *list = clean_node;
+  else {
+    free(buf);
+    free(clean_node);
+  }
 }

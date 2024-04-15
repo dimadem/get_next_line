@@ -11,24 +11,27 @@
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
-# define GET_NEXT_LINE_BONUS_H
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10
-# endif
-# define MAX_FD 2048
-# include <stdlib.h>
-# include <unistd.h>
-# include <stddef.h>
+#define GET_NEXT_LINE_BONUS_H
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 10
+#endif
+#include <stddef.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-// get_next_line_bonus
-char	*get_next_line(int fd);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
+typedef struct s_list {
+  char *str_buf;
+  struct s_list *next;
+} t_list;
 
-// get_next_line_utils_bonus
-char	*ft_strdup(const char *src);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
-size_t	ft_strlen(const char *s);
-char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strchr(const char *s, int c);
+int find_newline(t_list *list);
+t_list *find_last_node(t_list *list);
+char *get_line(t_list *list);
+void copy_str(t_list *list, char *str);
+int len_to_newline(t_list *list);
+void check_list(t_list **list);
+char *get_next_line(int fd);
+void dealloc(t_list **list, t_list *clean_node, char *buf);
+void create_list(t_list **list, int fd);
 
 #endif
